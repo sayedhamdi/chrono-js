@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chronometre</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 60px;
+      }
+      .chrono {
+        padding-top: 60px;
+        font-size: 60px;
+        font-weight: bold;
+      }
+      .buttons {
+        display: flex;
+        gap: 60px;
+      }
+      button {
+        padding: 10px 30px;
+        background: transparent;
+        border-radius: 20px;
+        font-size: 20px;
+        font-weight: bold;
+      }
+      #start {
+        border: 4px solid green;
+      }
+      #start:hover {
+        background: green;
+        color: white;
+      }
+      #pause {
+        border: 4px solid orange;
+      }
+      #pause:hover {
+        background: orange;
+        color: white;
+      }
+      #stop {
+        border: 4px solid red;
+      }
+      #stop:hover {
+        background: red;
+        color: white;
+      }
+      #reset {
+        border: 4px solid blue;
+      }
+      #reset:hover {
+        background: blue;
+        color: white;
+      }
+      .times {
+        font-size: 30px;
+      }
+      .times-container {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+      .red {
+        color: red;
+      }
+      .green {
+        color: green;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="chrono" id="chrono">00:00:00</div>
+      <div class="buttons">
+        <button id="start">Start</button>
+        <button id="pause">Pause</button>
+        <button id="stop">Stop</button>
+        <button id="reset">Reset</button>
+      </div>
+      <div class="times-container">
+        <div class="times">Times</div>
+        <ul id="times"></ul>
+      </div>
+    </div>
+    <script>
+      // el compteur yabda yetbadel
+      // setInterval (function , time in ms) exemple : setInterval(sayHello,1000)
+      // start the chrono when clicked on start
+      //format of display mtaa el chrono 00:00:00
+
+      let chrono = document.getElementById("chrono");
+      let startButton = document.getElementById("start");
+      let pauseButton = document.getElementById("pause");
+      let stopButton = document.getElementById("stop");
+      let times = document.getElementById("times");
+      let resetButton = document.getElementById("reset");
+      let counter = 0;
+      let started = false;
+      let interval;
+      let max = 0;
+      let min = 1000;
+      function increment() {
+        if (started) {
+          counter++;
+          display();
+        }
+      }
+      function display() {
+        let seconds = (counter % 60) + 100;
+        let minutes = Math.floor(counter / 60) + 100;
+        // 100+1 : 100+ 6  // [1,0,1] : [1,0,6]
+        chrono.innerHTML =
+          minutes.toString()[1] +
+          minutes.toString()[2] +
+          " : " +
+          seconds.toString()[1] +
+          seconds.toString()[2];
+      }
+
+      // on click event listener
+      startButton.onclick = function () {
+        if (!started) {
+          interval = setInterval(increment, 100);
+          started = true;
+        }
+      };
+
+      pauseButton.onclick = function (event) {
+        clearInterval(interval);
+        started = false;
+      };
+
+      stopButton.addEventListener("click", function () {
+        // ye9ef w yarjaa el 0 el counter
+        // yetzed el counter f liste
+        clearInterval(interval);
+        started = false;
+
+        if (counter > max) {
+          times.innerHTML += "<li class='red'>" + chrono.innerHTML + "</li>";
+          max = counter;
+          counter = 0;
+          display();
+          return;
+        }
+        if (counter < min) {
+          times.innerHTML += "<li class='green'>" + chrono.innerHTML + "</li>";
+          min = counter;
+          counter = 0;
+          display();
+          return;
+        }
+        times.innerHTML += "<li>" + chrono.innerHTML + "</li>";
+        counter = 0;
+        display();
+      });
+
+      resetButton.addEventListener("click", function () {
+        counter = 0;
+        started = false;
+        display();
+        clearInterval(interval);
+      });
+    </script>
+  </body>
+</html>
